@@ -1,0 +1,10 @@
+{
+  "script_paths": {
+    "primary": "C:\\Users\\tyler\\Script_starter.py",
+    "desktop": "C:\\Users\\tyler\\Desktop\\script_Starter.py"
+  },
+  "active_script": "primary",
+  "archive_dir": "Desktop",
+  "auto_shutdown_minutes": 15,
+  "port": 8001
+}
