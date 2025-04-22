@@ -6,5 +6,11 @@
   "active_script": "primary",
   "archive_dir": "Desktop",
   "auto_shutdown_minutes": 15,
-  "port": 8001
+  "port": 8001,
+  "api_config": {
+    "public_mode": false,
+    "api_key": "change_this_to_your_secret_key",
+    "allowed_ips": ["127.0.0.1"],
+    "max_file_size_mb": 50
+  }
 }
