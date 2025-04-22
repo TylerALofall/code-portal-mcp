@@ -1,0 +1,17 @@
+{
+  "openai": {
+    "api_key": "",
+    "organization": ""
+  },
+  "google": {
+    "api_key": "",
+    "project_id": ""
+  },
+  "azure": {
+    "api_key": "",
+    "endpoint": ""
+  },
+  "anthropic": {
+    "api_key": ""
+  }
+}
