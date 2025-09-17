@@ -293,16 +293,149 @@ async def home(request: Request):
         <head>
             <title>CodePortal MCP Server</title>
             <style>
-                body {{ font-family: Arial, sans-serif; margin: 0; padding: 20px; line-height: 1.6; }}
-                .container {{ max-width: 800px; margin: 0 auto; }}
-                h1 {{ color: #4CAF50; }}
-                .status {{ padding: 15px; background-color: #f8f9fa; border-radius: 5px; margin-bottom: 20px; }}
-                .success {{ color: green; }}
-                .warning {{ color: orange; }}
-                .error {{ color: red; }}
-                .security {{ background-color: #fff3cd; padding: 15px; border-radius: 5px; margin-bottom: 20px; }}
-                .endpoints {{ background-color: #f8f9fa; padding: 15px; border-radius: 5px; }}
-                .footer {{ margin-top: 30px; font-size: 0.8em; color: #6c757d; }}
+                body {{ 
+                    font-family: Arial, sans-serif; 
+                    margin: 0; 
+                    padding: 20px; 
+                    line-height: 1.6;
+                    background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 50%, #1a1a1a 100%);
+                    min-height: 100vh;
+                    color: #e0e0e0;
+                    position: relative;
+                    overflow-x: hidden;
+                }}
+                
+                /* Purple glow from sides */
+                body::before {{
+                    content: '';
+                    position: fixed;
+                    top: 0;
+                    left: -50px;
+                    width: 100px;
+                    height: 100%;
+                    background: linear-gradient(90deg, rgba(138, 43, 226, 0.4) 0%, rgba(138, 43, 226, 0) 100%);
+                    z-index: 1;
+                    pointer-events: none;
+                }}
+                
+                body::after {{
+                    content: '';
+                    position: fixed;
+                    top: 0;
+                    right: -50px;
+                    width: 100px;
+                    height: 100%;
+                    background: linear-gradient(270deg, rgba(138, 43, 226, 0.4) 0%, rgba(138, 43, 226, 0) 100%);
+                    z-index: 1;
+                    pointer-events: none;
+                }}
+                
+                .container {{ 
+                    max-width: 800px; 
+                    margin: 0 auto; 
+                    position: relative;
+                    z-index: 2;
+                }}
+                
+                h1 {{ 
+                    color: #00FF88; 
+                    text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+                    text-align: center;
+                }}
+                
+                h2 {{
+                    color: #00FF88;
+                    text-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+                }}
+                
+                .status, .security, .endpoints {{ 
+                    padding: 20px; 
+                    background: rgba(20, 20, 20, 0.8);
+                    border: 1px solid rgba(0, 255, 136, 0.3);
+                    border-radius: 10px; 
+                    margin-bottom: 20px;
+                    position: relative;
+                    backdrop-filter: blur(10px);
+                }}
+                
+                .status::before, .security::before, .endpoints::before {{
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.4);
+                    border-radius: inherit;
+                    z-index: -1;
+                    pointer-events: none;
+                }}
+                
+                .status::after, .security::after, .endpoints::after {{
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 255, 136, 0.1);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(0, 255, 136, 0.2);
+                    border-radius: inherit;
+                    z-index: 1;
+                    pointer-events: none;
+                }}
+                
+                .status > *, .security > *, .endpoints > * {{
+                    position: relative;
+                    z-index: 2;
+                }}
+                
+                .success {{ color: #00FF88; }}
+                .warning {{ color: #FFA500; }}
+                .error {{ color: #FF6B6B; }}
+                .footer {{ 
+                    margin-top: 30px; 
+                    font-size: 0.8em; 
+                    color: #888;
+                    text-align: center;
+                }}
+                
+                code {{
+                    background: rgba(0, 255, 136, 0.1);
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    color: #00FF88;
+                    border: 1px solid rgba(0, 255, 136, 0.2);
+                }}
+                
+                a {{
+                    color: #00FF88;
+                    text-decoration: none;
+                    transition: all 0.3s ease;
+                }}
+                
+                a:hover {{
+                    text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+                }}
+                
+                ul {{
+                    list-style-type: none;
+                    padding-left: 0;
+                }}
+                
+                li {{
+                    margin-bottom: 8px;
+                    padding-left: 20px;
+                    position: relative;
+                }}
+                
+                li::before {{
+                    content: "▶";
+                    color: #00FF88;
+                    position: absolute;
+                    left: 0;
+                }}
             </style>
         </head>
         <body>
@@ -364,16 +497,147 @@ async def setup():
         <head>
             <title>CodePortal MCP Setup</title>
             <style>
-                body {{ font-family: Arial, sans-serif; margin: 0; padding: 20px; line-height: 1.6; }}
-                .container {{ max-width: 800px; margin: 0 auto; }}
-                h1 {{ color: #4CAF50; }}
-                label {{ display: block; margin-top: 10px; font-weight: bold; }}
-                input[type="text"], input[type="number"], select {{ width: 100%; padding: 8px; margin-top: 5px; margin-bottom: 15px; }}
-                input[type="checkbox"] {{ margin-top: 5px; margin-bottom: 15px; }}
-                .form-group {{ margin-bottom: 15px; }}
-                .submit-btn {{ background-color: #4CAF50; color: white; padding: 10px 15px; border: none; cursor: pointer; }}
-                .security {{ background-color: #fff3cd; padding: 15px; border-radius: 5px; margin-bottom: 20px; }}
-                .footer {{ margin-top: 30px; font-size: 0.8em; color: #6c757d; }}
+                body {{ 
+                    font-family: Arial, sans-serif; 
+                    margin: 0; 
+                    padding: 20px; 
+                    line-height: 1.6;
+                    background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 50%, #1a1a1a 100%);
+                    min-height: 100vh;
+                    color: #e0e0e0;
+                    position: relative;
+                    overflow-x: hidden;
+                }}
+                
+                /* Purple glow from sides */
+                body::before {{
+                    content: '';
+                    position: fixed;
+                    top: 0;
+                    left: -50px;
+                    width: 100px;
+                    height: 100%;
+                    background: linear-gradient(90deg, rgba(138, 43, 226, 0.4) 0%, rgba(138, 43, 226, 0) 100%);
+                    z-index: 1;
+                    pointer-events: none;
+                }}
+                
+                body::after {{
+                    content: '';
+                    position: fixed;
+                    top: 0;
+                    right: -50px;
+                    width: 100px;
+                    height: 100%;
+                    background: linear-gradient(270deg, rgba(138, 43, 226, 0.4) 0%, rgba(138, 43, 226, 0) 100%);
+                    z-index: 1;
+                    pointer-events: none;
+                }}
+                
+                .container {{ 
+                    max-width: 800px; 
+                    margin: 0 auto;
+                    position: relative;
+                    z-index: 2;
+                }}
+                
+                h1, h2 {{ 
+                    color: #00FF88; 
+                    text-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+                }}
+                
+                label {{ 
+                    display: block; 
+                    margin-top: 15px; 
+                    font-weight: bold;
+                    color: #00FF88;
+                }}
+                
+                input[type="text"], input[type="number"], select {{ 
+                    width: 100%; 
+                    padding: 10px; 
+                    margin-top: 8px; 
+                    margin-bottom: 15px;
+                    background: rgba(20, 20, 20, 0.8);
+                    border: 1px solid rgba(0, 255, 136, 0.3);
+                    border-radius: 6px;
+                    color: #e0e0e0;
+                    backdrop-filter: blur(5px);
+                    transition: all 0.3s ease;
+                }}
+                
+                input[type="text"]:focus, input[type="number"]:focus, select:focus {{
+                    outline: none;
+                    border-color: rgba(0, 255, 136, 0.6);
+                    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+                }}
+                
+                input[type="checkbox"] {{ 
+                    margin-top: 8px; 
+                    margin-bottom: 15px;
+                    accent-color: #00FF88;
+                }}
+                
+                .form-group {{ 
+                    margin-bottom: 20px;
+                    position: relative;
+                }}
+                
+                .submit-btn {{ 
+                    background: linear-gradient(135deg, rgba(0, 255, 136, 0.8) 0%, rgba(0, 200, 100, 0.8) 100%);
+                    color: white; 
+                    padding: 12px 20px; 
+                    border: none; 
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+                }}
+                
+                .submit-btn:hover {{
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5);
+                }}
+                
+                .security {{ 
+                    background: rgba(40, 30, 0, 0.8);
+                    border: 1px solid rgba(255, 193, 7, 0.5);
+                    padding: 20px; 
+                    border-radius: 10px; 
+                    margin-bottom: 25px;
+                    backdrop-filter: blur(10px);
+                    position: relative;
+                }}
+                
+                .security::before {{
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.4);
+                    border-radius: inherit;
+                    z-index: -1;
+                }}
+                
+                .security > * {{
+                    position: relative;
+                    z-index: 1;
+                }}
+                
+                .footer {{ 
+                    margin-top: 30px; 
+                    font-size: 0.8em; 
+                    color: #888;
+                    text-align: center;
+                }}
+                
+                p {{
+                    color: #d0d0d0;
+                    margin-bottom: 10px;
+                }}
             </style>
         </head>
         <body>

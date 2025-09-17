@@ -131,22 +131,165 @@ async def ai_ui():
         <head>
             <title>AI Integration</title>
             <style>
-                body {{ font-family: Arial, sans-serif; margin: 0; padding: 20px; line-height: 1.6; }}
-                .container {{ max-width: 800px; margin: 0 auto; }}
-                h1 {{ color: #4CAF50; }}
-                textarea, select, input[type="number"] {{ width: 100%; padding: 8px; margin: 5px 0 15px; }}
-                button {{ background-color: #4CAF50; color: white; padding: 10px 15px; border: none; cursor: pointer; }}
-                #result {{ 
-                    margin-top: 20px; padding: 15px; border: 1px solid #ddd; 
-                    border-radius: 5px; white-space: pre-wrap; background: #f9f9f9; 
+                body {{ 
+                    font-family: Arial, sans-serif; 
+                    margin: 0; 
+                    padding: 20px; 
+                    line-height: 1.6;
+                    background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 50%, #1a1a1a 100%);
+                    min-height: 100vh;
+                    color: #e0e0e0;
+                    position: relative;
+                    overflow-x: hidden;
                 }}
-                .keys-section {{ margin-top: 30px; }}
-                .tab {{ overflow: hidden; border: 1px solid #ccc; background-color: #f1f1f1; }}
-                .tab button {{ background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; }}
-                .tab button:hover {{ background-color: #ddd; }}
-                .tab button.active {{ background-color: #ccc; }}
-                .tabcontent {{ display: none; padding: 6px 12px; border: 1px solid #ccc; border-top: none; }}
-                .show {{ display: block; }}
+                
+                /* Purple glow from sides */
+                body::before {{
+                    content: '';
+                    position: fixed;
+                    top: 0;
+                    left: -50px;
+                    width: 100px;
+                    height: 100%;
+                    background: linear-gradient(90deg, rgba(138, 43, 226, 0.4) 0%, rgba(138, 43, 226, 0) 100%);
+                    z-index: 1;
+                    pointer-events: none;
+                }}
+                
+                body::after {{
+                    content: '';
+                    position: fixed;
+                    top: 0;
+                    right: -50px;
+                    width: 100px;
+                    height: 100%;
+                    background: linear-gradient(270deg, rgba(138, 43, 226, 0.4) 0%, rgba(138, 43, 226, 0) 100%);
+                    z-index: 1;
+                    pointer-events: none;
+                }}
+                
+                .container {{ 
+                    max-width: 800px; 
+                    margin: 0 auto;
+                    position: relative;
+                    z-index: 2;
+                }}
+                
+                h1, h2, h3 {{ 
+                    color: #00FF88; 
+                    text-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+                }}
+                
+                textarea, select, input[type="text"], input[type="password"], input[type="number"] {{ 
+                    width: 100%; 
+                    padding: 10px; 
+                    margin: 8px 0 15px;
+                    background: rgba(20, 20, 20, 0.8);
+                    border: 1px solid rgba(0, 255, 136, 0.3);
+                    border-radius: 6px;
+                    color: #e0e0e0;
+                    backdrop-filter: blur(5px);
+                    transition: all 0.3s ease;
+                }}
+                
+                textarea:focus, select:focus, input:focus {{
+                    outline: none;
+                    border-color: rgba(0, 255, 136, 0.6);
+                    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+                }}
+                
+                label {{
+                    color: #00FF88;
+                    font-weight: bold;
+                    margin-top: 10px;
+                    display: block;
+                }}
+                
+                button {{ 
+                    background: linear-gradient(135deg, rgba(0, 255, 136, 0.8) 0%, rgba(0, 200, 100, 0.8) 100%);
+                    color: white; 
+                    padding: 12px 18px; 
+                    border: none; 
+                    border-radius: 6px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+                    margin: 10px 5px;
+                }}
+                
+                button:hover {{
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5);
+                }}
+                
+                #result {{ 
+                    margin-top: 20px; 
+                    padding: 15px; 
+                    border: 1px solid rgba(0, 255, 136, 0.3);
+                    border-radius: 8px; 
+                    white-space: pre-wrap; 
+                    background: rgba(20, 20, 20, 0.8);
+                    backdrop-filter: blur(10px);
+                    color: #e0e0e0;
+                }}
+                
+                .keys-section {{ 
+                    margin-top: 30px;
+                }}
+                
+                .keys-form {{
+                    background: rgba(20, 20, 20, 0.8);
+                    border: 1px solid rgba(0, 255, 136, 0.3);
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                    backdrop-filter: blur(10px);
+                }}
+                
+                .tab {{ 
+                    overflow: hidden; 
+                    border: 1px solid rgba(0, 255, 136, 0.3);
+                    background: rgba(20, 20, 20, 0.8);
+                    backdrop-filter: blur(10px);
+                    border-radius: 10px 10px 0 0;
+                }}
+                
+                .tab button {{ 
+                    background: transparent;
+                    float: left; 
+                    border: none; 
+                    outline: none; 
+                    cursor: pointer; 
+                    padding: 14px 16px;
+                    color: #b0b0b0;
+                    margin: 0;
+                }}
+                
+                .tab button:hover {{ 
+                    background: rgba(0, 255, 136, 0.1);
+                    color: #00FF88;
+                }}
+                
+                .tab button.active {{ 
+                    background: rgba(0, 255, 136, 0.2);
+                    color: #00FF88;
+                    box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.3);
+                }}
+                
+                .tabcontent {{ 
+                    display: none; 
+                    padding: 20px; 
+                    border: 1px solid rgba(0, 255, 136, 0.3);
+                    border-top: none;
+                    background: rgba(15, 15, 15, 0.8);
+                    backdrop-filter: blur(5px);
+                    border-radius: 0 0 10px 10px;
+                }}
+                
+                .show {{ 
+                    display: block; 
+                }}
+            </style>
             </style>
         </head>
         <body>
@@ -228,22 +371,22 @@ async def ai_ui():
                 </div>
                 
                 <script>
-                    function openTab(evt, tabName) {
+                    function openTab(evt, tabName) {{
                         var i, tabcontent, tablinks;
                         tabcontent = document.getElementsByClassName("tabcontent");
-                        for (i = 0; i < tabcontent.length; i++) {
+                        for (i = 0; i < tabcontent.length; i++) {{
                             tabcontent[i].style.display = "none";
-                        }
+                        }}
                         tablinks = document.getElementsByClassName("tablinks");
-                        for (i = 0; i < tablinks.length; i++) {
+                        for (i = 0; i < tablinks.length; i++) {{
                             tablinks[i].className = tablinks[i].className.replace(" active", "");
-                        }
+                        }}
                         document.getElementById(tabName).style.display = "block";
                         evt.currentTarget.className += " active";
-                    }
+                    }}
                     
                     // Generate text form
-                    document.getElementById('generate-form').addEventListener('submit', async function(e) {
+                    document.getElementById('generate-form').addEventListener('submit', async function(e) {{
                         e.preventDefault();
                         
                         const resultContainer = document.getElementById('result-container');
@@ -251,73 +394,73 @@ async def ai_ui():
                         resultContainer.style.display = 'block';
                         resultElement.textContent = 'Processing...';
                         
-                        const formData = {
+                        const formData = {{
                             prompt: document.getElementById('prompt').value,
                             provider: document.getElementById('provider').value,
                             model: document.getElementById('model').value || undefined,
                             temperature: parseFloat(document.getElementById('temperature').value),
                             max_tokens: parseInt(document.getElementById('max_tokens').value)
-                        };
+                        }};
                         
-                        try {
-                            const response = await fetch('/ai/generate', {
+                        try {{
+                            const response = await fetch('/ai/generate', {{
                                 method: 'POST',
-                                headers: {
+                                headers: {{
                                     'Content-Type': 'application/json'
-                                },
+                                }},
                                 body: JSON.stringify(formData)
-                            });
+                            }});
                             
                             const data = await response.json();
                             
-                            if (data.error) {
+                            if (data.error) {{
                                 resultElement.textContent = 'Error: ' + data.error;
-                            } else {
+                            }} else {{
                                 resultElement.textContent = data.text;
-                            }
-                        } catch (error) {
+                            }}
+                        }} catch (error) {{
                             resultElement.textContent = 'Error: ' + error.message;
-                        }
-                    });
+                        }}
+                    }});
                     
                     // API key forms
-                    document.querySelectorAll('.keys-form').forEach(form => {
-                        form.addEventListener('submit', async function(e) {
+                    document.querySelectorAll('.keys-form').forEach(form => {{
+                        form.addEventListener('submit', async function(e) {{
                             e.preventDefault();
                             const provider = e.submitter.dataset.provider;
                             
-                            const formData = {
+                            const formData = {{
                                 provider: provider,
                                 api_key: this.querySelector('input[name="api_key"]').value,
-                                additional_info: {}
-                            };
+                                additional_info: {{}}
+                            }};
                             
                             // Get additional fields
-                            this.querySelectorAll('input:not([name="api_key"])').forEach(input => {
-                                if (input.value) {
+                            this.querySelectorAll('input:not([name="api_key"])').forEach(input => {{
+                                if (input.value) {{
                                     formData.additional_info[input.name] = input.value;
-                                }
-                            });
+                                }}
+                            }});
                             
-                            try {
-                                const response = await fetch('/ai/keys', {
+                            try {{
+                                const response = await fetch('/ai/keys', {{
                                     method: 'POST',
-                                    headers: {
+                                    headers: {{
                                         'Content-Type': 'application/json'
-                                    },
+                                    }},
                                     body: JSON.stringify(formData)
-                                });
+                                }});
                                 
                                 const data = await response.json();
                                 alert(data.message || 'API key updated');
                                 
                                 // Reset form
                                 this.reset();
-                            } catch (error) {
+                            }} catch (error) {{
                                 alert('Error: ' + error.message);
-                            }
-                        });
-                    });
+                            }}
+                        }});
+                    }});
                 </script>
             </div>
         </body>
