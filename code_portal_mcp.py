@@ -30,6 +30,9 @@ import secrets
 import uuid
 import socket
 
+# Import AI endpoints module
+import ai_endpoints
+
 # =================================================
 # STEP 1: Load configuration
 # =================================================
@@ -272,6 +275,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Set up AI provider endpoints
+ai_endpoints.setup_ai_routes(app)
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
