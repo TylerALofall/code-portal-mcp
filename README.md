@@ -41,7 +41,7 @@ This server helps you organize code files into properly structured projects and 
 **OpenAI Models:**
 - `gpt-4`, `gpt-4-turbo` - Most capable models
 - `gpt-4o`, `gpt-4o-mini` - Optimized models with vision
-- `o1`, `o1-mini` - Advanced reasoning models (Codex)
+- `o1`, `o1-mini` - Advanced reasoning models
 - `gpt-3.5-turbo` - Fast and cost-effective
 
 **Google Models:**
