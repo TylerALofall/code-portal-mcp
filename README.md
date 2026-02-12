@@ -32,8 +32,23 @@ This server helps you organize code files into properly structured projects and 
    - Google Generative AI key (starts with `AIza`)
 3. Use the "Generate Text" tab to:
    - Choose your provider (OpenAI or Google)
+   - Select a model from the dropdown (GPT-4, GPT-4 Turbo, o1, o1-mini, Gemini Pro, etc.)
    - Enter your prompt
    - Get AI responses directly on your computer
+
+### Supported Models
+
+**OpenAI Models:**
+- `gpt-4`, `gpt-4-turbo` - Most capable models
+- `gpt-4o`, `gpt-4o-mini` - Optimized models with vision
+- `o1`, `o1-mini` - Advanced reasoning models (Codex)
+- `gpt-3.5-turbo` - Fast and cost-effective
+
+**Google Models:**
+- `gemini-pro` - General purpose model
+- `gemini-1.5-pro`, `gemini-1.5-flash` - Latest Gemini models
+
+You can also enter custom model names if you have access to beta or specialized models.
 
 ## Project Management
 

@@ -169,8 +169,28 @@ async def ai_ui():
                         </div>
                         
                         <div>
-                            <label for="model">Model (leave blank for default):</label>
-                            <input type="text" id="model" name="model" placeholder="e.g., gpt-4, gemini-pro">
+                            <label for="model">Model:</label>
+                            <select id="model" name="model">
+                                <option value="">Default (gpt-3.5-turbo / gemini-pro)</option>
+                                <optgroup label="OpenAI Models">
+                                    <option value="gpt-4">gpt-4</option>
+                                    <option value="gpt-4-turbo">gpt-4-turbo</option>
+                                    <option value="gpt-4o">gpt-4o</option>
+                                    <option value="gpt-4o-mini">gpt-4o-mini</option>
+                                    <option value="o1">o1 (reasoning)</option>
+                                    <option value="o1-mini">o1-mini (reasoning)</option>
+                                    <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                                </optgroup>
+                                <optgroup label="Google Models">
+                                    <option value="gemini-pro">gemini-pro</option>
+                                    <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+                                    <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+                                </optgroup>
+                                <optgroup label="Custom">
+                                    <option value="custom">Enter custom model...</option>
+                                </optgroup>
+                            </select>
+                            <input type="text" id="custom-model" name="custom_model" placeholder="Enter custom model name" style="display: none; margin-top: 5px;">
                         </div>
                         
                         <div>
@@ -242,6 +262,16 @@ async def ai_ui():
                         evt.currentTarget.className += " active";
                     }
                     
+                    // Handle custom model input
+                    document.getElementById('model').addEventListener('change', function() {
+                        const customInput = document.getElementById('custom-model');
+                        if (this.value === 'custom') {
+                            customInput.style.display = 'block';
+                        } else {
+                            customInput.style.display = 'none';
+                        }
+                    });
+                    
                     // Generate text form
                     document.getElementById('generate-form').addEventListener('submit', async function(e) {
                         e.preventDefault();
@@ -251,10 +281,16 @@ async def ai_ui():
                         resultContainer.style.display = 'block';
                         resultElement.textContent = 'Processing...';
                         
+                        // Determine the model to use
+                        let modelValue = document.getElementById('model').value;
+                        if (modelValue === 'custom') {
+                            modelValue = document.getElementById('custom-model').value;
+                        }
+                        
                         const formData = {
                             prompt: document.getElementById('prompt').value,
                             provider: document.getElementById('provider').value,
-                            model: document.getElementById('model').value || undefined,
+                            model: modelValue || undefined,
                             temperature: parseFloat(document.getElementById('temperature').value),
                             max_tokens: parseInt(document.getElementById('max_tokens').value)
                         };
