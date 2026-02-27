@@ -17,7 +17,7 @@
 
 ### Critical Architectural Patterns
 
-**External Script Loading**: Server dynamically loads user's `Script_starter.py` using `importlib.util.spec_from_file_location()`. Paths configured in `config.json` during setup wizard. Script must expose `Config` and `ProjectManager` classes.
+**External Script Loading**: Server dynamically loads user's `Script_starter.py` using `importlib.util.spec_from_file_location()`. Paths configured in `config.json` during setup wizard. Script must expose `Config` and `ProjectManager` classes. **Security note**: This executes arbitrary Python code - only load trusted scripts and run server in isolated environments for untrusted code.
 
 **AI Route Integration**: AI endpoints MUST be registered in `code_portal_mcp.py` after FastAPI app creation:
 ```python
@@ -65,7 +65,7 @@ python3 code_portal_mcp.py
 - **Auto-Shutdown**: Configurable inactivity timer (default 15min) via `ui_components.py`
 
 ### Model Selection Pattern
-AI UI provides dropdown with current models (gpt-4, gpt-4o, o1, o1-mini, gemini-pro, etc.) plus "custom" option. Model names passed directly to provider APIs - no server-side validation. See `ai_endpoints.py` lines 172-193 for dropdown structure.
+AI UI provides dropdown with current models (gpt-4, gpt-4o, o1, o1-mini, gemini-pro, etc.) plus "custom" option. **Security note**: Model names are passed directly to provider APIs without server-side validation - this is intentional to support new/beta models, but means users can potentially incur costs from expensive models. See `ai_endpoints.py` lines 172-193 for dropdown structure.
 
 ### File Organization
 - AI response logs: `ai_logs/` directory (created automatically)
