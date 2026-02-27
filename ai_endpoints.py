@@ -169,8 +169,28 @@ async def ai_ui():
                         </div>
                         
                         <div>
-                            <label for="model">Model (leave blank for default):</label>
-                            <input type="text" id="model" name="model" placeholder="e.g., gpt-4, gemini-pro">
+                            <label for="model">Model:</label>
+                            <select id="model" name="model">
+                                <option value="">Default (gpt-3.5-turbo / gemini-pro)</option>
+                                <optgroup label="OpenAI Models">
+                                    <option value="gpt-4">gpt-4</option>
+                                    <option value="gpt-4-turbo">gpt-4-turbo</option>
+                                    <option value="gpt-4o">gpt-4o</option>
+                                    <option value="gpt-4o-mini">gpt-4o-mini</option>
+                                    <option value="o1">o1 (reasoning)</option>
+                                    <option value="o1-mini">o1-mini (reasoning)</option>
+                                    <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                                </optgroup>
+                                <optgroup label="Google Models">
+                                    <option value="gemini-pro">gemini-pro</option>
+                                    <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+                                    <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+                                </optgroup>
+                                <optgroup label="Custom">
+                                    <option value="custom">Enter custom model...</option>
+                                </optgroup>
+                            </select>
+                            <input type="text" id="custom-model" name="custom_model" placeholder="Enter custom model name" style="display: none; margin-top: 5px;">
                         </div>
                         
                         <div>
@@ -228,22 +248,32 @@ async def ai_ui():
                 </div>
                 
                 <script>
-                    function openTab(evt, tabName) {
+                    function openTab(evt, tabName) {{
                         var i, tabcontent, tablinks;
                         tabcontent = document.getElementsByClassName("tabcontent");
-                        for (i = 0; i < tabcontent.length; i++) {
+                        for (i = 0; i < tabcontent.length; i++) {{
                             tabcontent[i].style.display = "none";
-                        }
+                        }}
                         tablinks = document.getElementsByClassName("tablinks");
-                        for (i = 0; i < tablinks.length; i++) {
+                        for (i = 0; i < tablinks.length; i++) {{
                             tablinks[i].className = tablinks[i].className.replace(" active", "");
-                        }
+                        }}
                         document.getElementById(tabName).style.display = "block";
                         evt.currentTarget.className += " active";
-                    }
+                    }}
+                    
+                    // Handle custom model input
+                    document.getElementById('model').addEventListener('change', function() {{
+                        const customInput = document.getElementById('custom-model');
+                        if (this.value === 'custom') {{
+                            customInput.style.display = 'block';
+                        }} else {{
+                            customInput.style.display = 'none';
+                        }}
+                    }});
                     
                     // Generate text form
-                    document.getElementById('generate-form').addEventListener('submit', async function(e) {
+                    document.getElementById('generate-form').addEventListener('submit', async function(e) {{
                         e.preventDefault();
                         
                         const resultContainer = document.getElementById('result-container');
@@ -251,73 +281,79 @@ async def ai_ui():
                         resultContainer.style.display = 'block';
                         resultElement.textContent = 'Processing...';
                         
-                        const formData = {
+                        // Determine the model to use
+                        let modelValue = document.getElementById('model').value;
+                        if (modelValue === 'custom') {{
+                            modelValue = document.getElementById('custom-model').value;
+                        }}
+                        
+                        const formData = {{
                             prompt: document.getElementById('prompt').value,
                             provider: document.getElementById('provider').value,
-                            model: document.getElementById('model').value || undefined,
+                            model: modelValue || undefined,
                             temperature: parseFloat(document.getElementById('temperature').value),
                             max_tokens: parseInt(document.getElementById('max_tokens').value)
-                        };
+                        }};
                         
-                        try {
-                            const response = await fetch('/ai/generate', {
+                        try {{
+                            const response = await fetch('/ai/generate', {{
                                 method: 'POST',
-                                headers: {
+                                headers: {{
                                     'Content-Type': 'application/json'
-                                },
+                                }},
                                 body: JSON.stringify(formData)
-                            });
+                            }});
                             
                             const data = await response.json();
                             
-                            if (data.error) {
+                            if (data.error) {{
                                 resultElement.textContent = 'Error: ' + data.error;
-                            } else {
+                            }} else {{
                                 resultElement.textContent = data.text;
-                            }
-                        } catch (error) {
+                            }}
+                        }} catch (error) {{
                             resultElement.textContent = 'Error: ' + error.message;
-                        }
-                    });
+                        }}
+                    }});
                     
                     // API key forms
-                    document.querySelectorAll('.keys-form').forEach(form => {
-                        form.addEventListener('submit', async function(e) {
+                    document.querySelectorAll('.keys-form').forEach(form => {{
+                        form.addEventListener('submit', async function(e) {{
                             e.preventDefault();
                             const provider = e.submitter.dataset.provider;
                             
-                            const formData = {
+                            const formData = {{
                                 provider: provider,
                                 api_key: this.querySelector('input[name="api_key"]').value,
-                                additional_info: {}
-                            };
+                                additional_info: {{}}
+                            }};
                             
                             // Get additional fields
-                            this.querySelectorAll('input:not([name="api_key"])').forEach(input => {
-                                if (input.value) {
+                            this.querySelectorAll('input:not([name="api_key"])').forEach(input => {{
+                                if (input.value) {{
                                     formData.additional_info[input.name] = input.value;
-                                }
-                            });
+                                }}
+                            }});
                             
-                            try {
-                                const response = await fetch('/ai/keys', {
+                            try {{
+                                const response = await fetch('/ai/keys', {{
                                     method: 'POST',
-                                    headers: {
+                                    headers: {{
                                         'Content-Type': 'application/json'
-                                    },
+                                    }},
                                     body: JSON.stringify(formData)
-                                });
+                                }});
                                 
                                 const data = await response.json();
                                 alert(data.message || 'API key updated');
                                 
                                 // Reset form
                                 this.reset();
-                            } catch (error) {
+                            }} catch (error) {{
                                 alert('Error: ' + error.message);
-                            }
-                        });
-                    });
+                            }}
+                        }});
+                    }});
                 </script>
             </div>
         </body>
