@@ -246,6 +246,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Register the Legal Document Template System router
+try:
+    from legal_templates import router as legal_router
+    app.include_router(legal_router)
+    print("✅ Legal Document Template System registered at /legal/*")
+except Exception as _legal_err:
+    print(f"⚠️ Legal templates module could not be loaded: {_legal_err}")
+
 # Add IP validation middleware
 @app.middleware("http")
 async def ip_validator_middleware(request: Request, call_next):
@@ -328,9 +336,20 @@ async def home(request: Request):
                     <h2>API Endpoints</h2>
                     <ul>
                         <li><code>POST /createProject</code> - Create a new project from files</li>
+                        <li><code>POST /createProject</code> - Create a new project from files</li>
                         <li><code>GET /recentProjects</code> - List recent projects</li>
                         <li><code>GET /config</code> - Show current configuration</li>
                         <li><a href="/setup"><code>GET /setup</code></a> - Change server configuration</li>
+                    </ul>
+                    <h2 style="margin-top:16px;">Legal Document Template System</h2>
+                    <ul>
+                        <li><a href="/legal/ui"><code>GET /legal/ui</code></a> - Legal template &amp; document builder UI</li>
+                        <li><code>GET/POST /legal/templates</code> - Manage document templates (up to 2,000)</li>
+                        <li><code>GET/POST /legal/facts</code> - Store verbatim fact blocks</li>
+                        <li><code>GET/POST /legal/defendants</code> - Defendant / party information</li>
+                        <li><code>POST /legal/files/upload</code> - Upload &amp; store document files</li>
+                        <li><code>POST /legal/build</code> - Build a complete document package</li>
+                        <li><code>POST /legal/research</code> - Multi-model AI legal research</li>
                     </ul>
                 </div>
                 
