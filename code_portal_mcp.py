@@ -336,7 +336,6 @@ async def home(request: Request):
                     <h2>API Endpoints</h2>
                     <ul>
                         <li><code>POST /createProject</code> - Create a new project from files</li>
-                        <li><code>POST /createProject</code> - Create a new project from files</li>
                         <li><code>GET /recentProjects</code> - List recent projects</li>
                         <li><code>GET /config</code> - Show current configuration</li>
                         <li><a href="/setup"><code>GET /setup</code></a> - Change server configuration</li>

@@ -107,7 +107,7 @@ def init_db():
 
 
 def _now() -> str:
-    return datetime.datetime.utcnow().isoformat()
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
 # ══════════════════════════════════════════════════════════════════════════════

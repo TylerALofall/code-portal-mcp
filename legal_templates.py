@@ -31,7 +31,17 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
 import legal_db as db
-import ai_providers
+
+try:
+    import ai_providers
+    _ai_available = True
+except Exception as _ai_err:
+    import logging
+    logging.getLogger("legal_templates").warning(
+        "ai_providers not available — research endpoints will return errors: %s", _ai_err
+    )
+    ai_providers = None  # type: ignore[assignment]
+    _ai_available = False
 
 # ── Router ─────────────────────────────────────────────────────────────────────
 router = APIRouter(prefix="/legal", tags=["Legal Templates"])
@@ -319,6 +329,8 @@ def _research_prompt(query: str, round_num: int, previous: str = "") -> str:
 
 async def _query_provider_async(provider: str, prompt: str, max_tokens: int) -> str:
     """Run a single provider query in a thread pool to avoid blocking."""
+    if not _ai_available or ai_providers is None:
+        return f"[{provider} unavailable: ai_providers module not loaded]"
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(
         None,
@@ -805,14 +817,14 @@ def _build_ui_html(template_count: int) -> str:
 </header>
 
 <nav>
-  <button class="active" onclick="showPanel('dashboard')">📊 Dashboard</button>
-  <button onclick="showPanel('templates')">📋 Templates</button>
-  <button onclick="showPanel('facts')">📝 Fact Blocks</button>
-  <button onclick="showPanel('defendants')">👤 Defendants</button>
-  <button onclick="showPanel('files')">📁 Files</button>
-  <button onclick="showPanel('builder')">🏗️ Build Document</button>
-  <button onclick="showPanel('research')">🔍 Research</button>
-  <button onclick="showPanel('packages')">📦 Packages</button>
+  <button class="active" onclick="showPanel('dashboard',this)">📊 Dashboard</button>
+  <button onclick="showPanel('templates',this)">📋 Templates</button>
+  <button onclick="showPanel('facts',this)">📝 Fact Blocks</button>
+  <button onclick="showPanel('defendants',this)">👤 Defendants</button>
+  <button onclick="showPanel('files',this)">📁 Files</button>
+  <button onclick="showPanel('builder',this)">🏗️ Build Document</button>
+  <button onclick="showPanel('research',this)">🔍 Research</button>
+  <button onclick="showPanel('packages',this)">📦 Packages</button>
 </nav>
 
 <div id="msg"></div>
@@ -830,11 +842,11 @@ def _build_ui_html(template_count: int) -> str:
     <h3>Quick Links</h3>
     <p style="margin-bottom:12px;color:#aaa;">Manage your legal document templates, facts, and defendants from the tabs above.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="btn btn-primary" onclick="showPanel('templates')">📋 Templates</button>
-      <button class="btn btn-secondary" onclick="showPanel('facts')">📝 Add Facts</button>
-      <button class="btn btn-secondary" onclick="showPanel('defendants')">👤 Defendants</button>
-      <button class="btn btn-success" onclick="showPanel('builder')">🏗️ Build Document</button>
-      <button class="btn btn-secondary" onclick="showPanel('research')">🔍 Research</button>
+      <button class="btn btn-primary" onclick="showPanel('templates',this)">📋 Templates</button>
+      <button class="btn btn-secondary" onclick="showPanel('facts',this)">📝 Add Facts</button>
+      <button class="btn btn-secondary" onclick="showPanel('defendants',this)">👤 Defendants</button>
+      <button class="btn btn-success" onclick="showPanel('builder',this)">🏗️ Build Document</button>
+      <button class="btn btn-secondary" onclick="showPanel('research',this)">🔍 Research</button>
     </div>
   </div>
   <div class="card">
@@ -1107,11 +1119,11 @@ def _build_ui_html(template_count: int) -> str:
 
 <script>
 // ── Navigation ────────────────────────────────────────────────────────────────
-function showPanel(name) {{
+function showPanel(name, btn) {{
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
   if (name === 'dashboard') loadDashboard();
   if (name === 'templates') loadTemplates();
   if (name === 'facts') loadFacts();
@@ -1451,7 +1463,7 @@ async function viewPackage(id) {{
   const data = await fetch('/legal/packages/'+id).then(r=>r.json());
   document.getElementById('build-output').textContent = data.output_content;
   document.getElementById('build-result').style.display = 'block';
-  showPanel('builder');
+  showPanel('builder', document.querySelector('nav button:nth-child(6)'));
 }}
 
 async function deletePackage(id) {{
